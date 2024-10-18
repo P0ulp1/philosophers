@@ -1,5 +1,12 @@
 {
 	"files.associations": {
 		"philo.h": "c"
-	}
+	},
+	"makefile.launchConfigurations": [
+		{
+			"cwd": "/home/phautena/Documents/philosophers",
+			"binaryPath": "/home/phautena/Documents/philosophers/philo",
+			"binaryArgs": []
+		}
+	]
 }

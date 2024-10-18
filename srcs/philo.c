@@ -6,7 +6,7 @@
 /*   By: phautena <phautena@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 10:55:28 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/17 14:23:57 by phautena         ###   ########.fr       */
+/*   Updated: 2024/10/18 11:23:13 by phautena         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,44 +24,9 @@ int	main(int argc, char *argv[])
 		return (1);
 	init_data(&data, philos);
 	init_forks(forks, ft_atoi(argv[1]));
-	printf("Time: %zu\n", get_current_time());
+	init_philos(philos, &data, forks, argv);
+	create_threads(&data, forks);
 	return (0);
-}
-
-void	init_philos(t_philo *philos, char *argv[])
-{
-	int	i;
-
-	i = 0;
-	while (i < ft_atoi(argv[1]))
-	{
-		philos->id = i + 1;
-		philos->eating = 0;
-		philos->meals_eaten = 0;
-		//Set input values (time to die; time to eat; time to sleep; n_philo)
-		// philos->start_time = gettimeofday()
-	}
-}
-
-void	init_forks(pthread_mutex_t *forks, int n_philo)
-{
-	int	i;
-
-	i = 0;
-	while (i < n_philo)
-	{
-		pthread_mutex_init(&forks[i], NULL);
-		i++;
-	}
-}
-
-void	init_data(t_program *data, t_philo *philos)
-{
-	data->dead_flag = 0;
-	data->philos = philos;
-	pthread_mutex_init(&data->dead_lock, NULL);
-	pthread_mutex_init(&data->meal_lock, NULL);
-	pthread_mutex_init(&data->write_lock, NULL);
 }
 
 int	check_args(char *argv[])

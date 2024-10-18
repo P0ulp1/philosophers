@@ -6,13 +6,13 @@
 #    By: phautena <phautena@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/17 10:51:21 by phautena          #+#    #+#              #
-#    Updated: 2024/10/17 11:15:13 by phautena         ###   ########.fr        #
+#    Updated: 2024/10/18 11:12:02 by phautena         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
-SRCS = ./srcs/philo.c ./srcs/utils.c
+SRCS = ./srcs/philo.c ./srcs/utils.c ./srcs/init.c ./srcs/threads.c
 
 OBJS =${SRCS:.c=.o}
 
