@@ -1,28 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo.c                                            :+:      :+:    :+:   */
+/*   synchro_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: p0ulp1 <p0ulp1@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/22 12:53:50 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/22 17:10:03 by p0ulp1           ###   ########.fr       */
+/*   Created: 2024/10/22 16:06:24 by p0ulp1            #+#    #+#             */
+/*   Updated: 2024/10/22 16:07:36 by p0ulp1           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	main(int argc, char *argv[])
+void	wait_all_threads(t_table *table)
 {
-	t_table	table;
-
-	if (argc == 5 || argc == 6)
-	{
-		parse_input(&table, argv);
-		data_init(&table);
-		dinner_start(&table);
-		// clean(&table);
-	}
-	else
-		error_exit("Wrong input: \nUsage is ./philo 5 800 200 200 [5]");
+	while (!get_bool(&table->table_mutex, &table->all_threads_ready))
+		;
 }
