@@ -6,7 +6,7 @@
 /*   By: phautena <phautena@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 12:25:01 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/29 13:52:44 by phautena         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:29:49 by phautena         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@ static void	ft_free(t_data *data)
 		pthread_mutex_destroy(&data->forks[i]);
 	pthread_mutex_destroy(&data->write_lock);
 	pthread_mutex_destroy(&data->must_eat_lock);
+	pthread_mutex_destroy(&data->start_lock);
+	pthread_mutex_destroy(&data->end_lock);
+	pthread_mutex_destroy(&data->time_lock);
 	if (data->forks)
 		free(data->forks);
 	if (data->philos)

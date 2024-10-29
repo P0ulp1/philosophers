@@ -6,7 +6,7 @@
 /*   By: phautena <phautena@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 13:26:27 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/29 13:51:31 by phautena         ###   ########.fr       */
+/*   Updated: 2024/10/29 16:33:30 by phautena         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ static bool	check_all_ate(t_data *data)
 
 	i = -1;
 	ate = 0;
-	pthread_mutex_lock(&data->must_eat_lock);
 	while (++i < data->nb_philo)
 	{
+		pthread_mutex_lock(&data->must_eat_lock);
 		if (data->philos[i].must_eat_n == data->must_eat)
 			ate++;
+		pthread_mutex_unlock(&data->must_eat_lock);
 	}
-	pthread_mutex_unlock(&data->must_eat_lock);
 	if (ate == data->nb_philo)
 		return (true);
 	return (false);
@@ -39,20 +39,22 @@ static void	monitor(t_data *data)
 	while (data->end == false)
 	{
 		i = -1;
+		pthread_mutex_lock(&data->time_lock);
 		while (++i < data->nb_philo)
 		{
 			if (get_time() - data->philos[i].last_meal > data->tt_die)
 			{
 				safe_write(&data->philos[i], "has died");
-				data->end = true;
+				set_bool(&data->end_lock, &data->end, true);
 				break ;
 			}
 		}
+		pthread_mutex_unlock(&data->time_lock);
 		if (data->end == true)
 			break ;
 		if (check_all_ate(data) == true)
 		{
-			data->end = true;
+			set_bool(&data->end_lock, &data->end, true);
 			break ;
 		}
 	}
@@ -63,13 +65,16 @@ static void	philo_eat(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	if (data->end == false)
+	// if (data->end == false)
+	if (get_bool(&data->end_lock, &data->end) == false)
 	{
 		pthread_mutex_lock(philo->first_fork);
 		safe_write(philo, "has taken a fork");
 		pthread_mutex_lock(philo->second_fork);
 		safe_write(philo, "has taken a fork");
+		pthread_mutex_lock(&data->time_lock);
 		philo->last_meal = get_time();
+		pthread_mutex_unlock(&data->time_lock);
 		pthread_mutex_lock(&data->must_eat_lock);
 		philo->must_eat_n += 1;
 		pthread_mutex_unlock(&data->must_eat_lock);
@@ -87,9 +92,9 @@ static void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	data = philo->data;
-	while (data->start == false)
+	while (get_bool(&data->start_lock, &data->start) == false)
 		;
-	philo->last_meal = get_time();
+	set_long(&data->time_lock, &philo->last_meal, get_time());
 	if (data->nb_philo == 1)
 	{
 		lone_philo(data);
@@ -97,7 +102,8 @@ static void	*philo_routine(void *arg)
 	}
 	if (philo->id % 2)
 		precise_sleep(60);
-	while (data->end == false)
+	// while (data->end == false)
+	while (get_bool(&data->end_lock, &data->end) == false)
 	{
 		philo_eat(philo);
 		safe_write(philo, "is sleeping");
@@ -118,8 +124,8 @@ int	start_simulation(t_data *data)
 				philo_routine, &data->philos[i]) != 0)
 			return (printf("Error while creating a thread\n"));
 	}
-	data->start_time = get_time();
-	data->start = true;
+	set_long(&data->time_lock, &data->start_time, get_time());
+	set_bool(&data->start_lock, &data->start, true);
 	monitor(data);
 	i = -1;
 	while (++i < data->nb_philo)

@@ -6,7 +6,7 @@
 #    By: phautena <phautena@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/28 12:24:50 by phautena          #+#    #+#              #
-#    Updated: 2024/10/29 13:49:24 by phautena         ###   ########.fr        #
+#    Updated: 2024/10/29 16:30:33 by phautena         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ SRCS =	./srcs/philo.c \
 
 OBJS =${SRCS:.c=.o}
 
-CC = cc -Wall -Wextra -Werror -pthread -ggdb -g -I./includes/
+CC = cc -Wall -Wextra -Werror -pthread -fsanitize=thread -ggdb -g -I./includes/
 
 .c.o:
 	${CC} -c $< -o $@

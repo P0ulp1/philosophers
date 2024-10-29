@@ -6,7 +6,7 @@
 /*   By: phautena <phautena@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 12:25:24 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/29 13:52:39 by phautena         ###   ########.fr       */
+/*   Updated: 2024/10/29 16:20:20 by phautena         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,9 @@ typedef struct s_data
 	t_mtx	*forks;
 	t_mtx	write_lock;
 	t_mtx	must_eat_lock;
+	t_mtx	start_lock;
+	t_mtx	end_lock;
+	t_mtx	time_lock;
 }	t_data;
 
 //prototypes
@@ -64,6 +67,7 @@ long	get_time(void);
 void	precise_sleep(long usec);
 void	safe_write(t_philo *philo, char *status);
 void	lone_philo(t_data *data);
+void	died_write(t_philo *philo, char *status);
 ///sync_utils.c
 bool	get_bool(t_mtx *mutex, bool *value);
 void	set_bool(t_mtx *mutex, bool *value, bool to_set);
