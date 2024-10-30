@@ -6,7 +6,7 @@
 /*   By: phautena <phautena@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 13:26:27 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/29 16:33:30 by phautena         ###   ########.fr       */
+/*   Updated: 2024/10/30 11:58:41 by phautena         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static bool	check_all_ate(t_data *data)
 	while (++i < data->nb_philo)
 	{
 		pthread_mutex_lock(&data->must_eat_lock);
-		if (data->philos[i].must_eat_n == data->must_eat)
+		if (data->philos[i].must_eat_n >= data->must_eat)
 			ate++;
 		pthread_mutex_unlock(&data->must_eat_lock);
 	}
@@ -33,26 +33,26 @@ static bool	check_all_ate(t_data *data)
 
 static void	monitor(t_data *data)
 {
-	int	i;
+	int		i;
+	long	last_meal;
 
 	precise_sleep(60);
 	while (data->end == false)
 	{
 		i = -1;
-		pthread_mutex_lock(&data->time_lock);
 		while (++i < data->nb_philo)
 		{
-			if (get_time() - data->philos[i].last_meal > data->tt_die)
+			last_meal = get_long(&data->time_lock, &data->philos[i].last_meal);
+			if (get_time() - last_meal > data->tt_die)
 			{
 				safe_write(&data->philos[i], "has died");
 				set_bool(&data->end_lock, &data->end, true);
 				break ;
 			}
 		}
-		pthread_mutex_unlock(&data->time_lock);
 		if (data->end == true)
 			break ;
-		if (check_all_ate(data) == true)
+		if (data->must_eat != -1 && check_all_ate(data) == true)
 		{
 			set_bool(&data->end_lock, &data->end, true);
 			break ;
@@ -65,16 +65,13 @@ static void	philo_eat(t_philo *philo)
 	t_data	*data;
 
 	data = philo->data;
-	// if (data->end == false)
 	if (get_bool(&data->end_lock, &data->end) == false)
 	{
 		pthread_mutex_lock(philo->first_fork);
 		safe_write(philo, "has taken a fork");
 		pthread_mutex_lock(philo->second_fork);
 		safe_write(philo, "has taken a fork");
-		pthread_mutex_lock(&data->time_lock);
-		philo->last_meal = get_time();
-		pthread_mutex_unlock(&data->time_lock);
+		set_long(&data->time_lock, &philo->last_meal, get_time());
 		pthread_mutex_lock(&data->must_eat_lock);
 		philo->must_eat_n += 1;
 		pthread_mutex_unlock(&data->must_eat_lock);
@@ -102,7 +99,6 @@ static void	*philo_routine(void *arg)
 	}
 	if (philo->id % 2)
 		precise_sleep(60);
-	// while (data->end == false)
 	while (get_bool(&data->end_lock, &data->end) == false)
 	{
 		philo_eat(philo);
