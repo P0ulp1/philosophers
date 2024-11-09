@@ -6,7 +6,7 @@
 /*   By: phautena <phautena@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 13:26:27 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/30 11:58:41 by phautena         ###   ########.fr       */
+/*   Updated: 2024/11/09 15:30:14 by phautena         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	monitor(t_data *data)
 			last_meal = get_long(&data->time_lock, &data->philos[i].last_meal);
 			if (get_time() - last_meal > data->tt_die)
 			{
-				safe_write(&data->philos[i], "has died");
+				safe_write(&data->philos[i], "died");
 				set_bool(&data->end_lock, &data->end, true);
 				break ;
 			}
