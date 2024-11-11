@@ -6,7 +6,7 @@
 /*   By: phautena <phautena@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 12:41:35 by phautena          #+#    #+#             */
-/*   Updated: 2024/10/29 14:39:55 by phautena         ###   ########.fr       */
+/*   Updated: 2024/11/09 15:45:18 by phautena         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ static void	init_philos(t_data *data)
 		if (data->philos[i].id % 2)
 		{
 			data->philos[i].first_fork = &data->forks[i];
-			data->philos[i].second_fork = &data->forks[(i + 1) % data->nb_philo];
+			data->philos[i].second_fork = &data->forks[(i +1) % data->nb_philo];
 		}
 		else
 		{
-			data->philos[i].first_fork = &data->forks[(i + 1) % data->nb_philo];
+			data->philos[i].first_fork = &data->forks[(i +1) % data->nb_philo];
 			data->philos[i].second_fork = &data->forks[i];
 		}
 	}
